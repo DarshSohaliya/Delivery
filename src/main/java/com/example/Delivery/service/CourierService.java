@@ -5,6 +5,7 @@ import com.example.Delivery.model.User;
 import com.example.Delivery.repository.CourierRepository;
 import com.example.Delivery.repository.userRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -59,5 +60,39 @@ public class CourierService {
          booking.setDeliveryboy(deliveryboy);
          booking.setStatus("ASSIGNED");
         return ResponseEntity.ok(courierRepository.save(booking));
+    }
+
+    public ResponseEntity<?> updateLoaction(String bookinId, Double lat, Double lng,Principal principal) {
+        CourierBooking booking = courierRepository.findById(bookinId).orElseThrow();
+        String username = principal.getName();
+
+        if(!booking.getDeliveryboy().getUsername().equals(username)){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        booking.setCurrentLatitude(lat);
+        booking.setCurrentLongitude(lng);
+        return ResponseEntity.ok(courierRepository.save(booking));
+    }
+
+
+    public ResponseEntity<?> updateStatus(String bookingId, String status, Principal principal) {
+       CourierBooking courierBooking = courierRepository.findById(bookingId).orElseThrow();
+       String username = principal.getName();
+       if(!courierBooking.getDeliveryboy().getUsername().equals(username)){
+           return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+       }
+       courierBooking.setStatus(status);
+       return ResponseEntity.ok(courierRepository.save(courierBooking));
+    }
+
+    public ResponseEntity<?> trackParcel(String trackingId) {
+        CourierBooking courierBooking = courierRepository.findByTrackingId(trackingId);
+        if(courierBooking != null){
+            return  ResponseEntity.ok(courierBooking);
+
+        }
+        else{
+            return ResponseEntity.noContent().build();
+        }
     }
 }
