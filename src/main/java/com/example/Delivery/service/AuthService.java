@@ -36,7 +36,7 @@ public class AuthService {
             return  ResponseEntity.badRequest().body("User already exist!");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole("USER");
+        user.setRole(user.getRole());
         userRepository.save(user);
         return ResponseEntity.ok("User registered successfully!");
 

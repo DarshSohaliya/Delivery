@@ -17,7 +17,7 @@ import java.security.Principal;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/bookins")
+@RequestMapping("/api/booking")
 public class CourierBookingController {
 
     @Autowired
@@ -30,7 +30,7 @@ public class CourierBookingController {
     private CourierService courierService;
 
     @PostMapping("/book")
-    @PreAuthorize("hasRole('USER")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> createBooking(@RequestBody CourierBooking booking , Principal principal){
        return courierService.createBooking(booking,principal);
 
@@ -44,31 +44,33 @@ public class CourierBookingController {
 
 
     @GetMapping("/my")
-    @PreAuthorize("hasRole('USER)")
-    public ResponseEntity<?> getMyBooking(@RequestBody Principal principal){
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> getMyBooking(Principal principal){
          return courierService.getMyBooking(principal);
     }
 
     @PutMapping("/assign/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> assignCourier(@PathVariable String bookingId,@RequestParam String deliveryboyId ){
+    public ResponseEntity<?> assignCourier(@PathVariable("id") String bookingId,@RequestParam String deliveryboyId ){
         return courierService.assignDeliveryBoy(bookingId,deliveryboyId);
     }
 
     @PutMapping("update-location/{bookingId}")
     @PreAuthorize("hasRole('DELIVERY')")
-    public ResponseEntity<?> updateLocation(@PathVariable String bookinId,@RequestParam Double lat, @RequestParam Double lng ,Principal principal){
-       return courierService.updateLoaction(bookinId,lat,lng,principal);
+    public ResponseEntity<?> updateLocation(@PathVariable("bookingId") String bookingId,@RequestParam Double lat, @RequestParam Double lng ,Principal principal){
+       return courierService.updateLoaction(bookingId,lat,lng,principal);
     }
 
     @PutMapping("/status/{bookingId}")
     @PreAuthorize("hasRole('DELIVERY')")
-    public ResponseEntity<?> updateStatus(@PathVariable String bookingId,@RequestParam String status,Principal principal){
+    public ResponseEntity<?> updateStatus(@PathVariable("bookingId") String bookingId,@RequestParam String status,Principal principal){
+        System.out.println(bookingId + " " + status);
         return courierService.updateStatus(bookingId,status,principal);
+
     }
 
     @GetMapping("/track/{trackingId}")
-    public  ResponseEntity<?> trackParcel(@PathVariable String trackingId){
+    public  ResponseEntity<?> trackParcel(@PathVariable("trackingId") String trackingId){
          return  courierService.trackParcel(trackingId);
     }
 

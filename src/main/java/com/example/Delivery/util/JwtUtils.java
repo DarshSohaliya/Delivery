@@ -16,10 +16,10 @@ import java.util.Date;
 
 @Component
 public class JwtUtils {
+    private static final String SECRET = "YourSuperSecretKeyThatIsLongEnoughToPassThe512BitRequirement123!";
 
-    private static final String SECRET = "YourVeryLongSecretKeyMustBeAtLeast64CharactersLongToBeSecure!";
 
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
 
     private final long jwtExpirationMs = 86400000;
 

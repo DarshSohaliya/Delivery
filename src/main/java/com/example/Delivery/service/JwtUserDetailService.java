@@ -22,7 +22,7 @@ public class JwtUserDetailService implements UserDetailsService {
    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
        User user = userRepository.findByUsername(username);
-
+     System.out.println(user.getRole());
        return org.springframework.security.core.userdetails.User
                .withUsername(user.getUsername())
                .password(user.getPassword())

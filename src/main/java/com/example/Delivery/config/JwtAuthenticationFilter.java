@@ -49,7 +49,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                System.out.println("Authenticated: " + username);
             }
+        }
+        else{
+            System.out.println("JWT VALIDATION FILDED");
         }
         filterChain.doFilter(request,response);
     }

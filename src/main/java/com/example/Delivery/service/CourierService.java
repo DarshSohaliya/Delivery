@@ -27,11 +27,17 @@ public class CourierService {
         if(user == null ){
             return ResponseEntity.badRequest().body("User Not Found");
         }
+        String trackingId = "TRK-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        booking.setTrackingId(trackingId);
 
-        booking.setTrackingId(UUID.randomUUID().toString());
-        booking.setStatus("PENDING");
+
         booking.setUser(user);
-        return ResponseEntity.ok(courierRepository.save(booking));
+        booking.setStatus("Pending");
+        booking.setCurrentLatitude(null);
+        booking.setCurrentLongitude(null);
+
+        CourierBooking saved = courierRepository.save(booking);
+        return ResponseEntity.ok(saved);
     }
 
 
@@ -50,7 +56,8 @@ public class CourierService {
 
     public ResponseEntity<?> assignDeliveryBoy(String bookingId,String deliveryboyId){
          CourierBooking booking = courierRepository.findById(bookingId).orElseThrow();
-         User deliveryboy  = userRepository.findByUsername(deliveryboyId);
+         User deliveryboy  = userRepository.findById(deliveryboyId).orElseThrow();
+         System.out.println(deliveryboy + " bdhegfhGSGGSGG");
          if(deliveryboy == null){
              return ResponseEntity.badRequest().body("User Not Found");
          }
