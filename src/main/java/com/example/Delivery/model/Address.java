@@ -37,13 +37,13 @@ public class Address {
         this.label = label;
     }
 
-    public String getFullAddress() {
-        return fullAddress;
-    }
-
-    public void setFullAddress(String fullAddress) {
-        this.fullAddress = fullAddress;
-    }
+//    public String getFullAddress() {
+//        return fullAddress;
+//    }
+//
+//    public void setFullAddress(String fullAddress) {
+//        this.fullAddress = fullAddress;
+//    }
 
     public String getCity() {
         return city;
@@ -86,10 +86,19 @@ public class Address {
     }
 
     private String label;
-    private String fullAddress;
     private String city;
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
     private String state;
     private String postalCode;
+    private String street;
 
     private double latitude;
     private  double longitude;

@@ -1,5 +1,8 @@
 package com.example.Delivery.service;
 
+import com.example.Delivery.dto.AddressDTO;
+import com.example.Delivery.dto.CourierBookingResponseDTO;
+import com.example.Delivery.dto.UserDTO;
 import com.example.Delivery.model.Address;
 import com.example.Delivery.model.CourierBooking;
 import com.example.Delivery.model.Pricing;
@@ -13,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators;
 import org.springframework.expression.ExpressionException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -35,27 +39,51 @@ public class CourierBookingService {
     private PricingRepository pricingRepo;
 
 
-    public CourierBooking createBooking(String pickupAddressId, String dropAddressId, String itemDescription, double weightInKg, Principal principal) throws Exception{
+    public CourierBooking createBooking(@RequestBody AddressDTO pickup,@RequestBody AddressDTO drop, String itemDescription, double weightInKg, Principal principal) throws Exception{
         User user =userRepo.findByUsername(principal.getName());
         if(user == null) throw new Exception("User not found");
 
-        Address pickup =  addressRepo.findById(pickupAddressId).orElseThrow(() -> new Exception("Pickup address not found"));
+//        Address pickup =  addressRepo.findById(pickupAddressId).orElseThrow(() -> new Exception("Pickup address not found"));
+           Address pickupadd = new Address();
+           pickupadd.setUser(user);
+           pickupadd.setStreet(pickup.getStreet());
+           pickupadd.setCity(pickup.getCity());
+           pickupadd.setLabel(pickup.getLabel());
+           pickupadd.setPostalCode(pickup.getPincode());
+           pickupadd.setState(pickup.getState());
+           pickupadd.setLatitude(pickup.getLatitude());
+           pickupadd.setLongitude(pickup.getLongitude());
+           pickupadd = addressRepo.save(pickupadd);
 
-        Address drop = addressRepo.findById(dropAddressId).orElseThrow(() -> new Exception("Drop address not found"));
+        Address dropadd = new Address();
+        dropadd.setUser(user);
+        dropadd.setStreet(dropadd.getStreet());
+        dropadd.setCity(drop.getCity());
+        dropadd.setLabel(drop.getLabel());
+        dropadd.setPostalCode(drop.getPincode());
+        dropadd.setState(drop.getState());
+        dropadd.setLatitude(drop.getLatitude());
+        dropadd.setLongitude(drop.getLongitude());
+        dropadd = addressRepo.save(dropadd);
+//        Address drop = addressRepo.findById(dropAddressId).orElseThrow(() -> new Exception("Drop address not found"));
 
         double distance = calculateDistance(pickup,drop);
 
-        Pricing pricing = pricingRepo.findTopByOrderByLastUpdatedDesc();
-        if(pricing == null){
-            throw  new Exception("Pricing not configured");
-        }
-        double total = pricing.getBaseFare() + (pricing.getPricePerKm() * distance) + (pricing.getPricePerKg() * weightInKg);
+//        Pricing pricing = pricingRepo.findTopByOrderByLastUpdatedDesc();
+//        if(pricing == null){
+//            throw  new Exception("Pricing not configured");
+//        }
+
+//        double total = pricing.getBaseFare() + (pricing.getPricePerKm() * distance) + (pricing.getPricePerKg() * weightInKg);
+
+        double total = 66;
+
 
         CourierBooking booking = new CourierBooking();
         booking.setTrackingId("TRK-" + UUID.randomUUID().toString().substring(0, 8));
         booking.setUser(user);
-        booking.setPickupAddress(pickup);
-        booking.setDropAddress(drop);
+        booking.setPickupAddress(pickupadd);
+        booking.setDropAddress(dropadd);
         booking.setItemDescription(itemDescription);
         booking.setWeightInKg(weightInKg);
         booking.setDistanceInKm(distance);
@@ -67,7 +95,7 @@ public class CourierBookingService {
     }
 
 
-    private double calculateDistance(Address pickup, Address drop) {
+    private double calculateDistance(AddressDTO pickup, AddressDTO drop) {
         return 55.0;
     }
 
@@ -99,5 +127,48 @@ public class CourierBookingService {
         booking.setDeliveryBoy(deliveryBoy);
         booking.setStatus("ASSIGNED");
         bookingRepo.save(booking);
+    }
+
+    public CourierBookingResponseDTO mapToDTO(CourierBooking booking){
+        CourierBookingResponseDTO dto = new CourierBookingResponseDTO();
+
+        dto.setId(booking.getId());
+        dto.setTrackingId(booking.getTrackingId());
+
+
+        dto.setUser(mapUser(booking.getUser()));
+        dto.setDeliveryBoy(booking.getDeliveryBoy() != null ? mapUser(booking.getDeliveryBoy()) : null);
+
+        dto.setPickupAddress(mapAddress(booking.getPickupAddress()));
+        dto.setDropAddress(mapAddress(booking.getDropAddress()));
+
+        dto.setItemDescription(booking.getItemDescription());
+        dto.setWeightInKg(booking.getWeightInKg());
+        dto.setDistanceInKm(booking.getDistanceInKm());
+        dto.setTotalPrice(booking.getTotalPrice());
+        dto.setStatus(booking.getStatus());
+        dto.setBookingTime(booking.getBookingTime());
+        dto.setDeliveryTime(booking.getDeliveryTime());
+
+        return dto;
+    }
+
+    private UserDTO mapUser(User user){
+        UserDTO dto = new UserDTO();
+        dto.setId(user.getId());
+        dto.setUsername(user.getUsername());
+        dto.setRole(user.getRole());
+        return dto;
+    }
+    private AddressDTO mapAddress(Address address) {
+        AddressDTO dto = new AddressDTO();
+        dto.setId(address.getId());
+        dto.setLabel(address.getLabel());
+        dto.setCity(address.getCity());
+        dto.setState(address.getState());
+        dto.setPincode(address.getPostalCode());
+        dto.setLatitude(address.getLatitude());
+        dto.setLongitude(address.getLongitude());
+        return dto;
     }
 }

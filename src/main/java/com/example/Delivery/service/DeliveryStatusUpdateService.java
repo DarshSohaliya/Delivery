@@ -7,6 +7,7 @@ import com.example.Delivery.repository.CourierbookingRepository;
 import com.example.Delivery.repository.DeliveryStatusUpdateRepository;
 import com.example.Delivery.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,23 +18,24 @@ public class DeliveryStatusUpdateService {
     CourierbookingRepository bookingRepo;
    @Autowired
     UserRepository userRepo;
-   @Autowired
-    DeliveryStatusUpdateRepository statusRepo;
 
 
-    public DeliveryStatusUpdate addStatus(String bookingId, String status, String name) throws Exception {
+
+    public CourierBooking addStatus(String bookingId, String status, String name) throws Exception {
         CourierBooking booking = bookingRepo.findById(bookingId).orElseThrow(() -> new Exception("Booking not found"));
         User updatedBy = userRepo.findByUsername(name);
 
-        DeliveryStatusUpdate update = new DeliveryStatusUpdate();
-        update.setBooking(booking);
-        update.setUpdatedBy(updatedBy);
-        update.setStatus(status);
+//        DeliveryStatusUpdate update = new DeliveryStatusUpdate();
+//        update.setBooking(booking);
+//        update.setUpdatedBy(updatedBy);
+//        update.setStatus(status);
+        booking.setStatus(status);
+       return bookingRepo.save(booking);
 
-        return statusRepo.save(update);
+
     }
 
-    public List<DeliveryStatusUpdate> getStatusHistory(String bookingId){
-        return statusRepo.findByBooking_IdOrderByUpdatedAtDesc(bookingId);
-    }
+//    public List<DeliveryStatusUpdate> getStatusHistory(String bookingId){
+//        return statusRepo.findByBooking_IdOrderByUpdatedAtDesc(bookingId);
+//    }
 }
