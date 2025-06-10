@@ -5,6 +5,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
+
 @Document()
 public class CourierBooking {
     @Id
@@ -12,9 +14,11 @@ public class CourierBooking {
     private String id;
 
     private String trackingId;
-    private String pickupAddress;
-    private String deliveryAddress;
-    private Double parcelWeight;
+
+    @DBRef
+    private User user;
+
+    @DBRef User deliveryBoy;
 
     public String getId() {
         return id;
@@ -32,36 +36,68 @@ public class CourierBooking {
         this.trackingId = trackingId;
     }
 
-    public String getPickupAddress() {
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getDeliveryBoy() {
+        return deliveryBoy;
+    }
+
+    public void setDeliveryBoy(User deliveryBoy) {
+        this.deliveryBoy = deliveryBoy;
+    }
+
+    public Address getPickupAddress() {
         return pickupAddress;
     }
 
-    public void setPickupAddress(String pickupAddress) {
+    public void setPickupAddress(Address pickupAddress) {
         this.pickupAddress = pickupAddress;
     }
 
-    public String getDeliveryAddress() {
-        return deliveryAddress;
+    public Address getDropAddress() {
+        return dropAddress;
     }
 
-    public void setDeliveryAddress(String deliveryAddress) {
-        this.deliveryAddress = deliveryAddress;
+    public void setDropAddress(Address dropAddress) {
+        this.dropAddress = dropAddress;
     }
 
-    public Double getParcelWeight() {
-        return parcelWeight;
+    public String getItemDescription() {
+        return itemDescription;
     }
 
-    public void setParcelWeight(Double parcelWeight) {
-        this.parcelWeight = parcelWeight;
+    public void setItemDescription(String itemDescription) {
+        this.itemDescription = itemDescription;
     }
 
-    public String getParcelType() {
-        return parcelType;
+    public double getWeightInKg() {
+        return weightInKg;
     }
 
-    public void setParcelType(String parcelType) {
-        this.parcelType = parcelType;
+    public void setWeightInKg(double weightInKg) {
+        this.weightInKg = weightInKg;
+    }
+
+    public double getDistanceInKm() {
+        return distanceInKm;
+    }
+
+    public void setDistanceInKm(double distanceInKm) {
+        this.distanceInKm = distanceInKm;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     public String getStatus() {
@@ -72,47 +108,36 @@ public class CourierBooking {
         this.status = status;
     }
 
-    public Double getCurrentLatitude() {
-        return currentLatitude;
+    public LocalDateTime getDeliveryTime() {
+        return deliveryTime;
     }
 
-    public void setCurrentLatitude(Double currentLatitude) {
-        this.currentLatitude = currentLatitude;
+    public void setDeliveryTime(LocalDateTime deliveryTime) {
+        this.deliveryTime = deliveryTime;
     }
 
-    public Double getCurrentLongitude() {
-        return currentLongitude;
+    public LocalDateTime getBookingTime() {
+        return bookingTime;
     }
 
-    public void setCurrentLongitude(Double currentLongitude) {
-        this.currentLongitude = currentLongitude;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    private String parcelType;
-    private String status;
-
-    private Double currentLatitude;
-    private Double currentLongitude;
-
-   @DBRef
-    private User user;
-
-    public User getDeliveryboy() {
-        return deliveryboy;
-    }
-
-    public void setDeliveryboy(User deliveryboy) {
-        this.deliveryboy = deliveryboy;
+    public void setBookingTime(LocalDateTime bookingTime) {
+        this.bookingTime = bookingTime;
     }
 
     @DBRef
-   private User deliveryboy;
+    private Address pickupAddress;
+
+    @DBRef
+    private  Address dropAddress;
+
+    private String itemDescription;
+    private double weightInKg;
+    private double distanceInKm;
+    private double totalPrice;
+
+    private String status;
+
+    private LocalDateTime bookingTime;
+    private LocalDateTime deliveryTime;
+
 }

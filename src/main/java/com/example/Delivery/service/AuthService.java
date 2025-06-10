@@ -2,7 +2,7 @@ package com.example.Delivery.service;
 
 import com.example.Delivery.dto.AuthRequest;
 import com.example.Delivery.model.User;
-import com.example.Delivery.repository.userRepository;
+import com.example.Delivery.repository.UserRepository;
 import com.example.Delivery.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     @Autowired
-    private userRepository userRepository;
+    private UserRepository userRepo;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -32,12 +32,12 @@ public class AuthService {
     private JwtUserDetailService jwtUserDetailService;
 
     public ResponseEntity<String> register(User user) {
-        if(userRepository.findByUsername(user.getUsername()) != null ){
+        if(userRepo.findByUsername(user.getUsername()) != null ){
             return  ResponseEntity.badRequest().body("User already exist!");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(user.getRole());
-        userRepository.save(user);
+        userRepo.save(user);
         return ResponseEntity.ok("User registered successfully!");
 
     }
