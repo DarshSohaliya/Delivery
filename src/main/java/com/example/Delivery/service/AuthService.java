@@ -13,6 +13,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AuthService {
 
@@ -44,15 +46,29 @@ public class AuthService {
 
     public ResponseEntity<?> login(AuthRequest authRequest) {
        try{
-             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(),authRequest.getPassword()));
+           System.out.println(authRequest.getEmail());
+           System.out.println(authRequest.getUsername());
+           System.out.println(authRequest.getPassword());
 
+
+             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(),authRequest.getPassword()));
+           System.out.println("Hello From Below");
        }
        catch (BadCredentialsException e){
+           System.out.println("Heelo from catch");
            return ResponseEntity.status(401).build();
        }
        final UserDetails userDetails = jwtUserDetailService.loadUserByUsername(authRequest.getUsername());
-       String token = jwtUtils.generateToken(userDetails);
+        System.out.println("UserDetail::" + userDetails);
 
+       String token = jwtUtils.generateToken(userDetails);
+System.out.println("Token::" + token);
        return ResponseEntity.ok(token);
     }
+
+//    public List<User> getAllUsers() {
+////        return userRepo.findAll();
+//        List<User> list = ;
+//        return list;
+//    }
 }

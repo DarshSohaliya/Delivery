@@ -24,12 +24,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     JwtUserDetailService jwtUserDetailService;
 
 
-//    @Override
-//    protected boolean shouldNotFilter(HttpServletRequest httpServletRequest){
-//        String path = httpServletRequest.getServletPath();
-//        return path.startsWith("/api/auth");
-//
-//    }
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest httpServletRequest){
+        String path = httpServletRequest.getServletPath();
+        return path.startsWith("/api/auth");
+
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -39,12 +39,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if(authHeader != null  && authHeader.startsWith("Bearer ")){
             jwtToken = authHeader.substring(7);
+            System.out.println("JWT::" + jwtToken);
             username = jwtUtils.extractUsername(jwtToken);
         }
-
+        System.out.println("UserNAme ::" + username);
         if(username!=null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = jwtUserDetailService.loadUserByUsername(username);
-
+             System.out.println("USERDETIAL:::" + userDetails);
             if(jwtUtils.validation(jwtToken,userDetails)){
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
 

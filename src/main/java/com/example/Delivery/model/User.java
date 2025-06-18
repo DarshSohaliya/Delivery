@@ -1,26 +1,30 @@
 package com.example.Delivery.model;
 
 //import jakarta.persistence.*;
+import com.example.Delivery.Enum.Role;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
-@Document("User")
+
+@Document(collation = "en")
 
 public class User {
 
     @Id
-    private  String id;
-
-
+    private String id;
     private String username;
+    private String email;
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String userame) {
+        this.username = userame;
+    }
 
     private String password;
-
-    private String role;
-
-
 
     public String getId() {
         return id;
@@ -30,20 +34,14 @@ public class User {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+
+
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -53,6 +51,18 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+
+    private Role role;
+
 
 
 
